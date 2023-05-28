@@ -27,16 +27,96 @@ const initializeDbAndServer = async () => {
 
 initializeDbAndServer();
 
+const priorityList = ["HIGH", "MEDIUM", "LOW"];
+const statusList = ["TO DO", "IN PROGRESS", "DONE"];
+const categoryList = ["WORK", "HOME", "LEARNING"];
+
 app.get("/todos/", async (request, response) => {
   const { search_q, priority, status, category, date } = request.query;
   let getTodoQuery;
   let getTodoResult = "";
   switch (true) {
-    case hasTodoPriorityStatusCategory():
-      getTodosQuery = `SELECT * FROM todo WHERE todo LIKE "%${search_q}%
-        " AND priority = "%${priority}%" AND status = "%${status}%" AND category = "%${category}%"`;
+    case hasStatus(request.query):
+      if(statusList.includes(status) === undefined){
+        response.status(400);
+        response.send("Invalid Todo Status");
+      }  else{
+             getTodosQuery = `SELECT * FROM todo WHERE status = "%${status}%"`;
       getTodosResult = await db.all(getTodosQuery);
       response.send(getTodosResult);
       console.log(getTodosResult);
+      }
+      break;
+   
+    case hasPriority(request.query):
+        if(priorityList.includes(priority) === undefined){
+            response.status(400);
+        response.send("Invalid Todo Priority");
+        }else{
+            getTodosQuery = `SELECT * FROM todo WHERE priority = "%${priority}%"`;
+      getTodosResult = await db.all(getTodosQuery);
+      response.send(getTodosResult);
+      console.log(getTodosResult);
+        }
+        break;
+      
+    case hasPriorityStatus(request.query):
+        if(priorityList.includes(priority) === undefined){
+            response.status(400);
+        response.send("Invalid Todo Priority");
+        }else if(statusList.includes(status) === undefined){
+            response.status(400);
+        response.send("Invalid Todo Status");
+        }
+        else{
+            getTodosQuery = `SELECT * FROM todo WHERE priority = "%${priority}%" AND status = "%${status}%"`;
+      getTodosResult = await db.all(getTodosQuery);
+      response.send(getTodosResult);
+      console.log(getTodosResult);
+        }
+        break;
+      
+    case hasTodo(request.query):
+        if(){
+
+        }else{
+             getTodosQuery = `SELECT * FROM todo WHERE todo = "%${search_q}%"`;
+        getTodosResult = await db.all(getTodosQuery);
+        response.send(getTodosResult);
+        console.log(getTodosResult);
+        }
+        break;
+       
+    case hasCategoryStatus(request.query):
+        if(){
+
+        }else{
+            getTodosQuery = `SELECT * FROM todo WHERE category = "%${category}%" AND status = "%${status}%"`;
+        getTodosResult = await db.all(getTodosQuery);
+        response.send(getTodosResult);
+        console.log(getTodosResult);
+        }
+        break;
+        
+    case hasCategory(request.query):
+        if(){
+
+        }else{
+            getTodosQuery = `SELECT * FROM todo WHERE category = "%${category}%"`;
+        getTodosResult = await db.all(getTodosQuery);
+        response.send(getTodosResult);
+        console.log(getTodosResult);
+        }
+        break;
+    case hasCategoryPriority(request.query):
+        if(){
+
+        }else{
+             getTodosQuery = `SELECT * FROM todo WHERE category = "%${category}%" AND priority = "%${priority}%"`;
+        getTodosResult = await db.all(getTodosQuery);
+        response.send(getTodosResult);
+        console.log(getTodosResult);
+        }
+        break;
   }
 });
