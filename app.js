@@ -209,7 +209,10 @@ app.post("/todos/", async (request, response) => {
           const addTodoQuery = `
     INSERT INTO
         todo (id, todo, category, priority, status, due_date)
-    VALUES (${id}, "${todo}", "${category}" ,"${priority}", "${status}", "${dueDate}");
+    VALUES (${id}, "${todo}", "${category}" ,"${priority}", "${status}", "${format(
+            new Date(dueDate),
+            "yyyy-MM-dd"
+          )}");
     `;
           await db.run(addTodoQuery);
           response.send("Todo Successfully Added");
@@ -264,7 +267,7 @@ app.put("/todos/:todoId", async (request, response) => {
       response.send("Invalid Todo Category");
     }
   } else if (todo !== undefined) {
-    const updateTodoQuery = `UPDATE todo SET category = "${category}" WHERE id = ${todoId};`;
+    const updateTodoQuery = `UPDATE todo SET todo = "${todo}" WHERE id = ${todoId};`;
     await db.run(updateTodoQuery);
     response.send("Todo Updated");
   } else if (dueDate !== undefined) {
